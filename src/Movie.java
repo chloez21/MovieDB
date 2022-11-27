@@ -1,6 +1,8 @@
+import java.io.Serializable;
+
 import javafx.beans.property.SimpleStringProperty;
 
-public class Movie {
+public class Movie implements Serializable {
 
         private final SimpleStringProperty title;
         private final SimpleStringProperty director;
