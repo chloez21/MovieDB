@@ -3,10 +3,11 @@
 I like watching movies and documentaries. So I would like to build a movie database to rate the movie that I have watched.  
 Users can add, edit the movies in the database. They can also sort the list.  
 
-# Demo:
+**Demo:**
 https://youtu.be/xCFnyLFagDI
 
-**UML class diagrams**
+
+# UML class diagrams
 ![mermaid-diagram-2022-11-27-233415](https://user-images.githubusercontent.com/86437004/204307324-f1be3206-329f-4d2e-8b06-6246070b41e4.png)
 
 
