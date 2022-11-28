@@ -1,39 +1,33 @@
-demo:
-https://youtu.be/xCFnyLFagDI
-
 # MovieDB project
 
 I like watching movies and documentaries. So I would like to build a movie database to rate the movie that I have watched.  
-Users can add, remove, delete the movies in the database.(CRUD) They can also filte the result list.  
-At first, the app will use local storage. Later, I will add database in the backend.  
+Users can add, edit the movies in the database. They can also sort the list.  
+
+# Demo:
+https://youtu.be/xCFnyLFagDI
 
 **UML class diagrams**
+![mermaid-diagram-2022-11-27-233415](https://user-images.githubusercontent.com/86437004/204307324-f1be3206-329f-4d2e-8b06-6246070b41e4.png)
 
-![mermaid-diagram-2022-10-31-225115](https://user-images.githubusercontent.com/86437004/199149265-104fd342-b8be-4f3d-8f64-681e15878a32.png)
-
-
-
-
-
-To learn:
-+ springboot   
-+ book and music schema  
-+ social feature  
-+ visualization  
 
 
 classDiagram
-    Movie o-- Actor
-    Movie o-- Director
+VBox --* Scene
+Scene --* Stage
+HBox --* VBox
+ImageView --* VBox
+Movie --* ObservableList~Movie~
+TextField --* HBox
+Stage --* App
+TableView --* VBox
+TableColumn~Movie,String~ --* TableView
+Button --*HBox
+MenuBar --* VBox
+ObservableList~Movie~ --* TableView
 
-    Person <|-- Director
-    Person <|-- Actor
-
-    class Person{
-        <<interface>> 
-        +String Name
-        +String Country
+    class ObservableList~Movie~{
         +getMovie()
+        +setMovie()
     }
 
     class Movie{
@@ -45,18 +39,62 @@ classDiagram
       +getTitle()
       +setTitle()
       +getDirector()
+      +setDirector()
+      +getYearReleased()
+      +setYearRleased()
+      +getRating()
+      +setRating()
+      +getGenres()
+      +setGenres()
     }
 
-    class Actor{
+    class App{
+        +void start(Stage primaryStage)
+        +static void main(String[] args)
+    }
+    class TableColumn~Movie,String~{
+        +setCellValueFactory()
+        +setCellFactory()
+        +setOnEditCommit()
+    }
+    class TableView{
+
+        +setItems()
+        +getColumns()
+
     }
 
-    class User{
-        +addMovie()
-        +editMovie()
-        +deleteMovie()
+    class VBox{
+        -MenuBar menuBar
+        -TableView tableV
+        -HBox hbox
+        -ImageView iv1
     }
-    
-    class Director{
+
+    class HBox{
+        +setSpacing()
+        +setPadding()
+    }
+    class TextField{
+        +setText()
+        +setPrefWidth()
+    }
+
+    class ImageView{
+        +setImage()
+        +setFitWidth()
+        +setPreserveRation()
+    }
+
+    class Scene{
+        +getStylesheets()
+    }
+
+    class Stage{
+        +setWidth()
+        +setHeight()
+        +setTitle()
+        +setScene()
     }
 
     class Genre{
@@ -68,3 +106,5 @@ classDiagram
         FAMILY
         SCIFI
     }
+
+
