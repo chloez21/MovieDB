@@ -10,9 +10,10 @@ https://youtu.be/xCFnyLFagDI
 # UML class diagrams
 ![mermaid-diagram-2022-11-27-233415](https://user-images.githubusercontent.com/86437004/204307324-f1be3206-329f-4d2e-8b06-6246070b41e4.png)
 
-
+```
 
 classDiagram
+
 VBox --* Scene
 Scene --* Stage
 HBox --* VBox
@@ -107,5 +108,5 @@ ObservableList~Movie~ --* TableView
         FAMILY
         SCIFI
     }
-
+```
 
