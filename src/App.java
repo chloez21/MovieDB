@@ -1,6 +1,5 @@
 
 import javafx.application.*;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -15,21 +14,36 @@ import javafx.collections.FXCollections;
 import javafx.event.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.print.PrinterJob;
 
 public class App extends Application {
 
-    private final TableView<Movie> tableChron = new TableView<Movie>();
+    private final TableView<Movie> tableV = new TableView<Movie>();
     private final ObservableList<Movie> data = FXCollections.observableArrayList(
-            new Movie("Annie Hall", "Allen", "1978", "4", "Comedy"),
-            new Movie("BrokeBack Mountain", "Lee", "2005", "5", "N/A"));
+            new Movie("The Matrix", "Lana Wachowski, Lilly Wachowski", "1999", "5", "Sci-Fi"),
+            new Movie("Crouching Tiger, Hidden Dragon", "Ang Lee", "2000", "5", "Action"),
+            new Movie("Pulp Fiction", "Quentin Tarantino", "1994", "5", "Crime"),
+            new Movie("Frances Ha", "Noah Baumbach", "2012", "5", "Comedy"),
+            new Movie("2001: A Space Odyssey", "Stanley Kubrick", "1968", "5", "Sci-Fi"),
+            new Movie("Fight Club", "David Fincher", "1999", "5", "Drama")
+    );
+            
 
-    final HBox hb = new HBox();
+    // final HBox hb = new HBox();
     Label response;
 
     private Desktop desktop = Desktop.getDesktop();
@@ -41,13 +55,10 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        // To create: Add check box next to each movie you add, delete and edit buttons,
-        // add a week and month view, and a menu on top so you can save different
-        // copies.
+        VBox vb = new VBox(); // Create new vertical box.
 
-        VBox vBox1 = new VBox(); // Create new vertical box.
-        Scene scene1 = new Scene(vBox1); // Create scene1.
-        vBox1.setSpacing(7); // Spacing for box.
+        Scene scene = new Scene(vb); // Create scene.
+        vb.setSpacing(7); // Spacing for box.
 
         response = new Label("Menu");
 
@@ -69,7 +80,7 @@ public class App extends Application {
         menuBar.getMenus().add(fileMenu);
 
         // Create one event handler that will handle menu action events.
-        EventHandler<ActionEvent> MEHandler = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> AHandler = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ae) {
                 String name = ((MenuItem) ae.getTarget()).getText();
 
@@ -81,36 +92,66 @@ public class App extends Application {
             }
         };
 
-        open.setOnAction(MEHandler);
-        save.setOnAction(MEHandler);
-        print.setOnAction(MEHandler);
-        exit.setOnAction(MEHandler);
+        open.setOnAction(AHandler);
+        save.setOnAction(AHandler);
+        print.setOnAction(AHandler);
+        exit.setOnAction(AHandler);
 
         final FileChooser fileChooser = new FileChooser();
 
-        open.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(final ActionEvent e) {
-                        File opensFile = fileChooser.showOpenDialog(primaryStage);
-                        if (opensFile != null) {
-                            openFile(opensFile);
-                        }
-                    }
-
-                });
+        // TODO:
+        // open.setOnAction(
+        //         new EventHandler<ActionEvent>() {
+        //             @Override
+        //             public void handle(final ActionEvent e) {
+        //                 File opensFile = fileChooser.showOpenDialog(primaryStage);
+        //                 if (opensFile != null) {
+        //                     try{
+        //                         FileInputStream fileIn = new FileInputStream(opensFile);
+        //                         ObjectInputStream os = new ObjectInputStream(fileIn);
+        //                         ArrayList<Movie> movieList;
+        //                         movieList = (ArrayList<Movie>)os.readObject();
+        //                         System.out.println(movieList.toString());
+        //                         System.out.println("before loop");
+        //                         for (int i = 0; i < movieList.size(); i++) {
+        //                             Movie movie = movieList.get(i);
+        //                             System.out.println(movie.toString());
+        //                         }
+        //                         os.close();
+        //                     } catch (IOException i){
+        //                         i.printStackTrace();
+        //                     } catch (ClassNotFoundException e1) {
+        //                         // TODO Auto-generated catch block
+        //                         e1.printStackTrace();
+        //                     }
+                            
+        //                 }
+        //             }
+        //         });
 
         save.setOnAction(
                 new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
-                        File savesFile = fileChooser.showSaveDialog(primaryStage);
-                        if (savesFile != null) {
-                            saveFile(savesFile);
+                        if (data != null) {
+                            System.out.println(data);
+                            try {
+                                FileOutputStream fileOut = new FileOutputStream("movies.ser");
+                                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                                for(Movie m : data){
+                                    out.writeObject(m);
+                                }
+                                out.close();
+                                fileOut.close();
+                                System.out.printf("Saved!");
+                            } catch (IOException i) {
+                                i.printStackTrace();
+                            }
                         }
                     }
 
-                });
+                }
+        );
 
         // Allow a clicks on the print menuItem to open the print dialogue box.
         print.setOnAction(
@@ -125,36 +166,38 @@ public class App extends Application {
                             }
                         }
                     }
-                });
+                }
+        );
 
-        final Label label = new Label("Movie List"); // Main window heading label.
-        label.setFont(new Font("Arial", 18));
-        label.setPadding(new Insets(10, 10, 10, 10));
+        // final Label label = new Label("MOVIE LIST"); // Main window heading label.
+        // label.setFont(new Font("Arial", 20));
+        // label.setPadding(new Insets(10, 10, 10, 10));
 
-        tableChron.setEditable(true);
 
-        // Column headings in the tableChron.
-        TableColumn movieCol = new TableColumn("Movie");
-        TableColumn directorCol = new TableColumn("Director");
-        TableColumn yearreleasedCol = new TableColumn("YearReleased");
-        TableColumn ratingCol = new TableColumn("Rating");
-        TableColumn genresCol = new TableColumn("Genres");
-        TableColumn descriptionCol = new TableColumn("Movie Description");
+        tableV.setEditable(true);
 
-        movieCol.setCellValueFactory(
-                new PropertyValueFactory<Movie, String>("Movie"));
-        movieCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        movieCol.setOnEditCommit(
+        // Column headings in the tableV.
+        TableColumn<Movie,String> titleCol = new TableColumn<>("Title");
+        TableColumn<Movie,String> directorCol = new TableColumn<>("Director");
+        TableColumn<Movie,String> yearreleasedCol = new TableColumn<>("YearReleased");
+        TableColumn<Movie,String> ratingCol = new TableColumn<>("Rating");
+        TableColumn<Movie,String> genresCol = new TableColumn<>("Genres");
+
+
+        titleCol.setCellValueFactory(new PropertyValueFactory<Movie, String>("Title"));
+        titleCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        titleCol.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Movie, String>>() {
+                    
                     @Override
                     public void handle(TableColumn.CellEditEvent<Movie, String> t) {
                         ((Movie) t.getTableView().getItems().get(
                                 t.getTablePosition().getRow())).setTitle(t.getNewValue());
                     }
-                });
+                }
+        );
 
-        directorCol.setCellValueFactory(
-                new PropertyValueFactory<Movie, String>("Director"));
+        directorCol.setCellValueFactory(new PropertyValueFactory<Movie, String>("Director"));
         directorCol.setCellFactory(TextFieldTableCell.forTableColumn());
         directorCol.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Movie, String>>() {
@@ -165,8 +208,7 @@ public class App extends Application {
                     }
                 });
 
-        yearreleasedCol.setCellValueFactory(
-                new PropertyValueFactory<Movie, String>("YearReleased"));
+        yearreleasedCol.setCellValueFactory(new PropertyValueFactory<Movie, String>("YearReleased"));
         yearreleasedCol.setCellFactory(TextFieldTableCell.forTableColumn());
         yearreleasedCol.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Movie, String>>() {
@@ -177,8 +219,7 @@ public class App extends Application {
                     }
                 });
 
-        ratingCol.setCellValueFactory(
-                new PropertyValueFactory<Movie, String>("Rating"));
+        ratingCol.setCellValueFactory(new PropertyValueFactory<Movie, String>("Rating"));
         ratingCol.setCellFactory(TextFieldTableCell.forTableColumn());
         ratingCol.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Movie, String>>() {
@@ -189,8 +230,7 @@ public class App extends Application {
                     }
                 });
 
-        genresCol.setCellValueFactory(
-                new PropertyValueFactory<Movie, String>("Genres"));
+        genresCol.setCellValueFactory(new PropertyValueFactory<Movie, String>("Genres"));
         genresCol.setCellFactory(TextFieldTableCell.forTableColumn());
         genresCol.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Movie, String>>() {
@@ -202,50 +242,43 @@ public class App extends Application {
                 });
 
 
-        tableChron.setItems(data);
-        tableChron.getColumns().addAll(movieCol, directorCol, yearreleasedCol, ratingCol, genresCol, descriptionCol); // Place the
-                                                                                                          // column
-                                                                                                          // headings in
-                                                                                                          // tableChron.
+        tableV.setItems(data);
+        tableV.getColumns().addAll(titleCol, directorCol, yearreleasedCol, ratingCol, genresCol); // Place the column headings in tableV.
         // Set width
-        tableChron.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        movieCol.setMinWidth(150);
+        tableV.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        titleCol.setMinWidth(150);
         directorCol.setMinWidth(70);
         yearreleasedCol.setMinWidth(60);
         ratingCol.setMinWidth(60);
-        genresCol.setMinWidth(120);
-        descriptionCol.setMinWidth(200);
+        genresCol.setMinWidth(60);
+
 
         // Create horizontal box.
-        HBox hbox1 = new HBox();
-        hbox1.setSpacing(8);
-        hbox1.setPadding(new Insets(10, 10, 10, 10));
+        HBox hbox = new HBox();
+        hbox.setSpacing(8);
+        hbox.setPadding(new Insets(10, 10, 10, 10));
 
-        // Create text fields so the user can enter new movies into the table.
+        // for enter new movies into the table.
         TextField addTitle = new TextField();
         TextField addDirector = new TextField();
         TextField addYearReleased = new TextField();
         TextField addRating = new TextField();
         TextField addGenres = new TextField();
-        TextField addDescription = new TextField();
 
-        // Set initial text in fields.
-        addTitle.setText("Enter movie");
-        addDirector.setText("Enter director");
-        addYearReleased.setText("YearReleased");
+        // Set placeholder text in fields.
+        addTitle.setText("movie");
+        addDirector.setText("director");
+        addYearReleased.setText("Year");
         addRating.setText("Rating");
-        addGenres.setText("Give report to...");
-        addDescription.setText("Add specific descriptions");
+        addGenres.setText("Genres");
 
-        // Set length
         addTitle.setPrefWidth(150);
         addDirector.setPrefWidth(75);
         addYearReleased.setPrefWidth(65);
         addRating.setPrefWidth(65);
-        addGenres.setPrefWidth(120);
-        addDescription.setPrefWidth(150);
+        addGenres.setPrefWidth(65);
 
-        // Create add button.
+        // Create an add button.
         Button btnAdd = new Button("Add");
         btnAdd.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -256,26 +289,34 @@ public class App extends Application {
                         addYearReleased.getText(),
                         addRating.getText(),
                         addGenres.getText()));
+                System.out.println(addTitle.getText());
+
                 addTitle.clear();
                 addDirector.clear();
                 addYearReleased.clear();
                 addRating.clear();
                 addGenres.clear();
-                addDescription.clear();
             }
         });
 
         // Get user entry fields all in a horizontal row.
-        hbox1.getChildren().addAll(addTitle, addDirector, addYearReleased, addRating, addGenres, addDescription, btnAdd);
-
+        hbox.getChildren().addAll(addTitle, addDirector, addYearReleased, addRating, addGenres, btnAdd);
+        ImageView iv1 = new ImageView();
+        Image image = new Image(getClass().getResourceAsStream("scifi.jpg"));
+        iv1.setImage(image);
+        iv1.setFitWidth(600);
+        iv1.setPreserveRatio(true);
+        // iv1.setSmooth(true);
+        // iv1.setCache(true);
         // Get all items in a vertical, stacking format.
-        vBox1.getChildren().addAll(menuBar, label, tableChron, hbox1);
+        vb.getChildren().addAll(menuBar, tableV, hbox, iv1);
 
-        primaryStage.setWidth(750);
-        primaryStage.setHeight(500);
-        primaryStage.setTitle("Movie List"); // Names the window.
-        primaryStage.setScene(scene1); // Sets the scene to the stage.
-        primaryStage.show(); // Shows the stage.
+        primaryStage.setWidth(600);
+        primaryStage.setHeight(900);
+        primaryStage.setTitle("Movie List"); 
+        primaryStage.setScene(scene); 
+        scene.getStylesheets().add(getClass().getResource("App.css").toExternalForm());
+        primaryStage.show(); 
     }
 
 

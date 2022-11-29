@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Movie {
+public class Movie implements Serializable {
 
         private final SimpleStringProperty title;
         private final SimpleStringProperty director;
@@ -8,13 +9,13 @@ public class Movie {
         private final SimpleStringProperty rating;
         private final SimpleStringProperty genres;
 
-        Movie(String title1, String director1, String yearReleased1, String rating1, String genres1) {
+        Movie(String title, String director, String yearReleased, String rating, String genres) {
 
-            this.title = new SimpleStringProperty(title1);
-            this.director = new SimpleStringProperty(director1);
-            this.yearReleased = new SimpleStringProperty(yearReleased1);
-            this.rating = new SimpleStringProperty(rating1);
-            this.genres = new SimpleStringProperty(genres1);
+            this.title = new SimpleStringProperty(title);
+            this.director = new SimpleStringProperty(director);
+            this.yearReleased = new SimpleStringProperty(yearReleased);
+            this.rating = new SimpleStringProperty(rating);
+            this.genres = new SimpleStringProperty(genres);
         }
 
         public String getTitle() {
