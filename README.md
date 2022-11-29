@@ -3,6 +3,26 @@
 I like watching movies and documentaries. So I would like to build a movie database to rate the movie that I have watched.  
 Users can add, edit the movies in the database. They can also sort the list.  
 
+
+<img width="602" alt="Screen Shot 2022-11-28 at 10 16 10 PM" src="https://user-images.githubusercontent.com/86437004/204430136-d8384270-b8c5-4aff-935c-70971bb83e94.png">
+
+**Add a Movie**
+To add a movie, simply enter the desired text in the text field boxes at the bottom and press the "Add" button. 
+
+In order for the table to accept the text, each column uses setters and getters along with an action event and an event handler to access the information from the text fields.
+
+
+**Edit a Movie**
+The TableView class not only renders the table data but also provides the ability to edit it. 
+By double-clicking, the text can be edited or erased. In order to retain the text you entered, you must press the Enter key.
+
+This functionality is added by calling the setEditable() control. 
+
+
+
+
+
+
 **Demo:**
 https://youtu.be/xCFnyLFagDI
 
