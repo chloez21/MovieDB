@@ -313,7 +313,7 @@ public class App extends Application {
 
         primaryStage.setWidth(600);
         primaryStage.setHeight(900);
-        primaryStage.setTitle("Movie List"); 
+        primaryStage.setTitle("Movie DB"); 
         primaryStage.setScene(scene); 
         scene.getStylesheets().add(getClass().getResource("App.css").toExternalForm());
         primaryStage.show(); 
